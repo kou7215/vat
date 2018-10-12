@@ -10,15 +10,15 @@ parser = argparse.ArgumentParser()
 # data args
 parser.add_argument("--load_model", default=False, help="train is False, test is True")
 parser.add_argument("--load_model_path", default=None, help="path for checkpoint")
-parser.add_argument("--save_dir", default='./vat_mnist', help="path for save the model and logs")
+parser.add_argument("--save_dir", default='./logs', help="path for save the model and logs")
 # train conditions args
 parser.add_argument("--batch_size", type=int, default=32, help="batch size")
 parser.add_argument("--Ip", type=int, default=1, help="Power iteration num")
 parser.add_argument("--eps", type=float, default=8.0, help="Power iteration num")
-parser.add_argument("--xi", type=float, default=1e-6, help="Power iteration num")
+parser.add_argument("--xi", type=float, default=1e-6, help="hyper parameter scale of initialised d")
 parser.add_argument("--epoch", type=int, default=500, help="epoch")
 parser.add_argument("--print_loss_freq", type=int, default=500, help="print loss EPOCH frequency")
-parser.add_argument("--labeled_sample_num", type=int, default=100, help="print loss EPOCH frequency")
+parser.add_argument("--labeled_sample_num", type=int, default=100, help="number of labeled samples")
 parser.add_argument("--gpu_config", default=-1, help="0: gpu0, 1: gpu1, -1: both gpu")
 a = parser.parse_args()
 
@@ -156,6 +156,7 @@ with tf.name_scope('Model'):
     with tf.name_scope('CNN_outputs'):
         labeled_out = CNN(labeled_x)
         unlabeled_out = CNN(unlabeled_x)
+        val_out = CNN(val_x)
 
 
 # -------------------- Define Loss & ACC --------------------
@@ -176,10 +177,10 @@ with tf.name_scope('loss'):
 
 with tf.name_scope('Accuracy'):
     with tf.name_scope('train_acc'):
-        train_acc = Accuracy(CNN(labeled_x), label)
+        train_acc = Accuracy(labeled_out, label)
 
     with tf.name_scope('val_acc'):
-        val_acc = Accuracy(CNN(val_x), val_l)
+        val_acc = Accuracy(val_out, val_l)
 
 
 # -------------------- Define Optimizers --------------
