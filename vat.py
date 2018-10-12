@@ -8,8 +8,8 @@ mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
 parser = argparse.ArgumentParser()
 # data args
-parser.add_argument("--load_model", default=False, help="train is False, test is True")
-parser.add_argument("--load_model_path", default=None, help="path for checkpoint")
+parser.add_argument("--load_model", default=False, type=bool,help="train is False, test is True")
+parser.add_argument("--load_model_path", default='./logs/model', help="path for checkpoint")
 parser.add_argument("--save_dir", default='./logs', help="path for save the model and logs")
 # train conditions args
 parser.add_argument("--batch_size", type=int, default=32, help="batch size")
